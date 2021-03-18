@@ -2,12 +2,21 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { prepareConnection } from "../../../logic/database";
 import { getRepository, IsNull } from "typeorm";
 import { Session } from "../../../logic/entities/Session";
+import { Notification } from "../../../logic/entities/Notification";
+import { pushNotification } from "../../../logic/stream";
+import { Employee } from "../../../logic/entities/Employee";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
     await prepareConnection();
 
     const { employeeId } = req.query;
     const sessionRepository = getRepository(Session);
+    const employeeRepository = getRepository(Employee);
+    const employee = await employeeRepository.findOne({
+        where: {
+            id: employeeId,
+        },
+    });
     const currentSession = await sessionRepository.findOne({
         where: {
             employee: employeeId,
@@ -37,6 +46,11 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
                 id: parseInt(`${employeeId}`),
             },
         });
+
+        const notification = new Notification();
+        notification.title = "Arbeit begonnen";
+        notification.body = `${employee.firstName} ${employee.lastName} hat zum Arbeiten begonnen.`;
+        await pushNotification(notification);
 
         return res.status(201).end();
     }

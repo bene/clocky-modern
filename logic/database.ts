@@ -1,7 +1,9 @@
+import { createConnection, getConnection } from "typeorm";
+
 import { Break } from "./entities/Break";
 import { Session } from "./entities/Session";
 import { Employee } from "./entities/Employee";
-import { createConnection, getConnection } from "typeorm";
+import { Notification } from "./entities/Notification";
 
 let connectionReadyPromise: Promise<void> | null = null;
 
@@ -20,7 +22,7 @@ function prepareConnection() {
             await createConnection({
                 type: "postgres",
                 url: process.env.DATABASE_URL,
-                entities: [Break, Session, Employee],
+                entities: [Notification, Break, Session, Employee],
                 synchronize: true,
             });
         })();

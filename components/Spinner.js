@@ -22,7 +22,7 @@ function Spinner() {
             </Head>
             <div className="h-full flex items-center justify-center">
                 <svg
-                    className="animate-spin -ml-1 mr-3 h-16 w-16 text-white"
+                    className="animate-spin -ml-1 mr-3 h-16 w-16 text-gray-900 dark:text-white"
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
                     viewBox="0 0 24 24"

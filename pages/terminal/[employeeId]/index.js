@@ -45,11 +45,15 @@ function TerminalEmployee() {
             method: "PATCH",
         })
             .then((res) => {
-                router.push(`/terminal/${employeeId}/overview`).finally(() => {
-                    context.employees.find((e) => `${e.id}` === `${employeeId}`).status = "CheckedOut";
-                }).finally(() => {
-                    setLoading(false);
-                });
+                router
+                    .push(`/terminal/${employeeId}/overview`)
+                    .catch((err) => {
+                        setError(err);
+                        setLoading(false);
+                    })
+                    .finally(() => {
+                        context.employees.find((e) => `${e.id}` === `${employeeId}`).status = "CheckedOut";
+                    });
             })
             .catch((err) => {
                 setError(err);

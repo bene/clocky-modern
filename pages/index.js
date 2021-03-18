@@ -5,7 +5,7 @@ import moment from "moment";
 
 import AppContext from "../components/AppContext";
 import AvatarWithName from "../components/AvatarWithName";
-import {Login} from "../components/icons";
+import { Login } from "../components/icons";
 
 export default function Home() {
     const [currentDate, setCurrentDate] = useState(new Date());
@@ -67,7 +67,7 @@ export default function Home() {
                             className="inline-flex items-center p-3 border border-transparent rounded-full shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
                             type="button"
                         >
-                            <Login/>
+                            <Login />
                         </button>
                     </a>
                 </Link>

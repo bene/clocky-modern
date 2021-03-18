@@ -1,8 +1,11 @@
-import "../styles/globals.css";
-import AppContext from "../components/AppContext";
 import { useEffect, useState } from "react";
+import moment from "moment";
+
+import "../styles/globals.css";
+
+import AppContext from "../components/AppContext";
+import StreamClient from "../components/StreamClient";
 import Spinner from "../components/Spinner";
-import * as moment from "moment";
 
 moment.locale("de");
 
@@ -31,6 +34,7 @@ function MyApp({ Component, pageProps }) {
                 employees,
             }}
         >
+            <StreamClient />
             {isLoading ? <Spinner /> : <Component {...pageProps} />}
         </AppContext.Provider>
     );

@@ -100,7 +100,9 @@ function TerminalEmployee() {
             </Head>
             <div className="flex flex-col h-full max-w-5xl mx-auto px-4">
                 <div className="flex-grow flex flex-col items-center justify-center">
-                    <p className="text-6xl md:text-8xl font-bold mt-3 mb-12">Danke {employee.firstName}! 👋</p>
+                    <p className="text-6xl md:text-8xl font-bold mt-3 mb-12">
+                        Danke {employee.firstName}! 👋
+                    </p>
 
                     <div className="w-full overflow-hidden">
                         <div className="grid grid-cols-2 gap-4 p-2">
@@ -112,7 +114,8 @@ function TerminalEmployee() {
                                     <dd className="order-1 text-5xl font-extrabold text-primary-600">
                                         {moment
                                             .duration(
-                                                sessions.find((session) => isToday(session.startAt)).totalDuration
+                                                sessions.find((session) => isToday(session.startAt))
+                                                    .totalDuration
                                             )
                                             .humanize()}
                                     </dd>
