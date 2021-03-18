@@ -1,65 +1,77 @@
-import Head from 'next/head'
-import styles from '../styles/Home.module.css'
+import { useContext, useEffect, useState } from "react";
+import Head from "next/head";
+import Link from "next/link";
+import moment from "moment";
+
+import AppContext from "../components/AppContext";
+import AvatarWithName from "../components/AvatarWithName";
+import {Login} from "../components/icons";
 
 export default function Home() {
-  return (
-    <div className={styles.container}>
-      <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+    const [currentDate, setCurrentDate] = useState(new Date());
+    const context = useContext(AppContext);
 
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setCurrentDate(new Date());
+        }, 1000);
+        return () => clearInterval(interval);
+    }, [setCurrentDate]);
 
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
+    const avatars = context.employees
+        .sort((a, b) => {
+            if (a.status !== "CheckedOut" && b.status === "CheckedOut") {
+                return -1;
+            }
 
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
+            if (a.status === "CheckedOut" && b.status !== "CheckedOut") {
+                return 1;
+            }
 
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
+            return a.firstName.localeCompare(b.firstName);
+        })
+        .map((e) => (
+            <div key={e.id} className="m-2">
+                <Link href={`/terminal/${e.id}`}>
+                    <a>
+                        <AvatarWithName employee={e} />
+                    </a>
+                </Link>
+            </div>
+        ));
 
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
+    return (
+        <>
+            <Head>
+                <title>Terminal</title>
+                <link rel="icon" href="/favicon.ico" />
+            </Head>
 
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
+            <div className="container mx-auto px-4 h-full flex flex-col">
+                <div className="flex flex-col-reverse md:flex-row my-auto items-center my-auto">
+                    <div className="w-full md:w-1/2">
+                        <div className="flex flex-wrap justify-center">{avatars}</div>
+                    </div>
 
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
-        </a>
-      </footer>
-    </div>
-  )
+                    <div className="w-full md:w-1/2 my-12 md:my-0 text-center">
+                        <p className="text-4xl text-blue-400 font-bold">{moment(currentDate).format("LT")}</p>
+                        <p className="text-6xl md:text-8xl text-blue-500 font-bold">{context.companyName}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div className="fixed right-5 bottom-5">
+                <Link href="/admin">
+                    <a>
+                        <button
+                            className="inline-flex items-center p-3 border border-transparent rounded-full shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                            type="button"
+                        >
+                            <Login/>
+                        </button>
+                    </a>
+                </Link>
+            </div>
+        </>
+    );
 }
