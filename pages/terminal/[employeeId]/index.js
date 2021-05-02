@@ -5,10 +5,15 @@ import Head from "next/head";
 import AppContext from "../../../components/AppContext";
 import Spinner from "../../../components/Spinner";
 import useEmployee from "../../../components/hooks/useEmployee";
+import { X } from "../../../components/icons";
+import moment from "moment";
+import { useCurrentDate } from "../../../components/hooks/useCurrentDate";
 
 function TerminalEmployee() {
     const context = useContext(AppContext);
     const router = useRouter();
+    const currentDate = useCurrentDate();
+
     const { employeeId } = router.query;
 
     const [error, setError] = useState(null);
@@ -74,13 +79,24 @@ function TerminalEmployee() {
                 <title>Hallo {employee.firstName}! 👋</title>
             </Head>
             <div className="flex flex-col h-full">
+                <div className="py-6 bg-primary-500 shadow-lg">
+                    <div className="container mx-auto flex flex-row justify-between items-center text-white">
+                        <button type="button" onClick={() => router.push("/")}>
+                            <X className="h-8 w-9" />
+                        </button>
+                        <div className="flex flex-col items-end">
+                            <p className="text-2xl">{`${employee.firstName} ${employee.lastName}`}</p>
+                            <p>{moment(currentDate).format("LT")}</p>
+                        </div>
+                    </div>
+                </div>
                 <div className="flex-grow flex flex-col items-center justify-center">
                     <p className="text-6xl md:text-8xl font-bold mt-3">Hallo {employee.firstName}! 👋</p>
 
-                    <div className="flex flex-row mt-24 mb-12 mx-auto">
+                    <div className="grid grid-cols-2 gap-4 mt-24 mb-12 mx-auto">
                         {employee.status === "Working" && (
                             <button
-                                className="rounded-md shadow-sm text-white text-xl md:text-3xl px-8 md:px-20 py-5 md:py-14 bg-blue-400 mr-4"
+                                className="btn text-xl md:text-3xl px-8 md:px-20 py-5 md:py-14"
                                 onClick={onStartBreak}
                                 disabled={isLoading}
                             >
@@ -90,7 +106,7 @@ function TerminalEmployee() {
 
                         {employee.status === "OnPause" && (
                             <button
-                                className="rounded-md shadow-sm text-white text-xl md:text-3xl px-8 md:px-20 py-5 md:py-14 bg-blue-400 mr-4"
+                                className="btn text-xl md:text-3xl px-8 md:px-20 py-5 md:py-14"
                                 onClick={onEndBreak}
                                 disabled={isLoading}
                             >
@@ -100,7 +116,7 @@ function TerminalEmployee() {
 
                         {employee.status === "CheckedOut" ? (
                             <button
-                                className="rounded-md shadow-sm text-white text-xl md:text-3xl px-8 md:px-20 py-5 md:py-14 bg-blue-400"
+                                className="col-span-2 btn text-xl md:text-3xl px-8 md:px-20 py-5 md:py-14"
                                 onClick={onStartSession}
                                 disabled={isLoading}
                             >
@@ -108,7 +124,7 @@ function TerminalEmployee() {
                             </button>
                         ) : (
                             <button
-                                className="rounded-md shadow-sm text-white text-xl md:text-3xl px-8 md:px-20 py-5 md:py-14 bg-blue-400"
+                                className="btn text-xl md:text-3xl px-8 md:px-20 py-5 md:py-14"
                                 onClick={onEndSession}
                                 disabled={isLoading}
                             >
@@ -117,8 +133,6 @@ function TerminalEmployee() {
                         )}
                     </div>
                 </div>
-
-                <div className="my-2 flex justify-center"></div>
             </div>
         </>
     );

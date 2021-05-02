@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import moment from "moment";
@@ -6,17 +6,11 @@ import moment from "moment";
 import AppContext from "../components/AppContext";
 import AvatarWithName from "../components/AvatarWithName";
 import { Login } from "../components/icons";
+import { useCurrentDate } from "../components/hooks/useCurrentDate";
 
 export default function Home() {
-    const [currentDate, setCurrentDate] = useState(new Date());
     const context = useContext(AppContext);
-
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setCurrentDate(new Date());
-        }, 1000);
-        return () => clearInterval(interval);
-    }, [setCurrentDate]);
+    const currentDate = useCurrentDate();
 
     const avatars = context.employees
         .sort((a, b) => {

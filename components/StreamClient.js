@@ -9,13 +9,32 @@ function StreamClient() {
     const [notifications, setNotifications] = useState([]);
 
     useEffect(() => {
+        let timeouts = [];
+
         fetch(`/api/stream`).finally(() => {
             const socket = io();
 
             socket.on("notification", (newNotification) => {
-                setNotifications((prev) => [newNotification, ...prev]);
+                // Send system notification if possible
+                if (Notification.permission === "granted") {
+                    new Notification(newNotification.title, {
+                        body: newNotification.body,
+                    });
+                    return;
+                }
+
+                setNotifications((notifications) => [newNotification, ...notifications]);
+                const timeout = setTimeout(() => {
+                    setNotifications((notifications) => notifications.filter((n) => n !== newNotification));
+                    timeouts = timeouts.filter((t) => t !== timeout);
+                }, 5000);
+                timeouts.push(timeout);
             });
         });
+
+        return () => {
+            timeouts.forEach((i) => clearTimeout(i));
+        };
     }, [setNotifications]);
 
     return (

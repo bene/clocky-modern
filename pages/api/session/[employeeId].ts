@@ -47,6 +47,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             },
         });
 
+        // Send a notification
         const notification = new Notification();
         notification.title = "Arbeit begonnen";
         notification.body = `${employee.firstName} ${employee.lastName} hat zum Arbeiten begonnen.`;
@@ -64,6 +65,12 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
         currentSession.endAt = new Date();
         await sessionRepository.save(currentSession);
+
+        // Send a notification
+        const notification = new Notification();
+        notification.title = "Arbeit beendet";
+        notification.body = `${employee.firstName} ${employee.lastName} hat die Arbeite beendet.`;
+        await pushNotification(notification);
 
         return res.status(200).end();
     }

@@ -1,14 +1,18 @@
 import { useEffect, useState } from "react";
-import Link from "next/link";
+import { useRouter } from "next/router";
 import Head from "next/head";
 import moment from "moment";
 
 import Spinner from "../../../components/Spinner";
 import useEmployee from "../../../components/hooks/useEmployee";
 import { capitalize, isToday } from "../../../shared/utils";
+import { X } from "../../../components/icons";
+import { useCurrentDate } from "../../../components/hooks/useCurrentDate";
 
 function TerminalEmployee() {
+    const router = useRouter();
     const employee = useEmployee();
+    const currentDate = useCurrentDate();
 
     const [error, setError] = useState(null);
     const [isLoading, setLoading] = useState(false);
@@ -98,8 +102,19 @@ function TerminalEmployee() {
             <Head>
                 <title>Danke {employee.firstName}! 👋</title>
             </Head>
-            <div className="flex flex-col h-full max-w-5xl mx-auto px-4">
-                <div className="flex-grow flex flex-col items-center justify-center">
+            <div className="flex flex-col h-full">
+                <div className="py-6 bg-primary-500 shadow-lg">
+                    <div className="container mx-auto flex flex-row justify-between items-center text-white">
+                        <button type="button" onClick={() => router.push("/")}>
+                            <X className="h-8 w-9" />
+                        </button>
+                        <div className="flex flex-col items-end">
+                            <p className="text-2xl">{`${employee.firstName} ${employee.lastName}`}</p>
+                            <p>{moment(currentDate).format("LT")}</p>
+                        </div>
+                    </div>
+                </div>
+                <div className="container mx-auto flex-grow flex flex-col items-center justify-center">
                     <p className="text-6xl md:text-8xl font-bold mt-3 mb-12">
                         Danke {employee.firstName}! 👋
                     </p>
@@ -112,12 +127,14 @@ function TerminalEmployee() {
                                         insgesamt in der letzten Session
                                     </dt>
                                     <dd className="order-1 text-5xl font-extrabold text-primary-600">
-                                        {moment
-                                            .duration(
-                                                sessions.find((session) => isToday(session.startAt))
-                                                    .totalDuration
-                                            )
-                                            .humanize()}
+                                        {capitalize(
+                                            moment
+                                                .duration(
+                                                    sessions.find((session) => isToday(session.startAt))
+                                                        .totalDuration
+                                                )
+                                                .humanize()
+                                        )}
                                     </dd>
                                 </div>
                             </div>
@@ -125,7 +142,7 @@ function TerminalEmployee() {
                             <div className="col-span-1 bg-white shadow rounded">
                                 <div className="flex flex-col p-6 text-center">
                                     <dt className="order-2 mt-2 text-lg leading-6 font-medium text-gray-500">
-                                        letzten {sessions.length} Sessions insgesamt
+                                        insgesamt in den letzten {sessions.length} Sessions
                                     </dt>
                                     <dd className="order-1 text-5xl font-extrabold text-primary-600">
                                         {`${moment
@@ -143,16 +160,6 @@ function TerminalEmployee() {
                     <p className="dark:text-white mt-3">
                         Es werden die {sessions.length} letzten Sessions angezeigt.
                     </p>
-                </div>
-
-                <div className="my-2 flex justify-center">
-                    <Link href="/">
-                        <a>
-                            <button className="btn btn-lg" type="button">
-                                Zurück
-                            </button>
-                        </a>
-                    </Link>
                 </div>
             </div>
         </>
